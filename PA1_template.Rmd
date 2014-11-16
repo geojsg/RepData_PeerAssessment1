@@ -8,7 +8,7 @@ output:
 
 ## Loading and preprocessing the data
 
-```{r}
+```{r initialization}
 
 ## Loading the dataset
 data<-read.csv("activity.csv")
@@ -58,7 +58,7 @@ plot(x=stepinterv$time,y=stepinterv$steps,type="l", main="Daily activity pattern
 
 ## Imputing missing values
 
-```{r}
+```{r missingdata}
 ## Nb of missing data per features
 missingdata<-apply(data[,1:3],2,function(x) sum(is.na(x)))
 missingdata
@@ -72,7 +72,7 @@ In the dataset, there are **`r totalmissingdata`** missing values
 ### Creation of new datasets with estimated values for missing values
 
 Missing data will be replaced by the mean at that time (5min interval)
-```{r}
+```{r solving_missingdata}
 q<-merge(data,stepinterv,by.x="hour",by.y="hour")
 indexna<-is.na(q$steps.x)
 q2<-q
@@ -103,7 +103,7 @@ stepday_median2
 The mean of the total number of steps per day is **`r format(stepday_mean2, nsmall=2)`** (red line on histogram)  
 The median of the total number of steps per day is **`r format(stepday_median2,nsmall=2)`** (magenta line on histogram)  
 
-```{r}
+```{r gaps}
 gap_mean<-round(100*abs(stepday_mean2-stepday_mean)/stepday_mean,2)
 gap_mean
 gap_median<-round(100*abs(stepday_median2-stepday_median)/stepday_median,2)
@@ -115,8 +115,7 @@ Imputing missing data has a negligible impact on mean (`r format(gap_mean,nsmall
 
 ## Are there differences in activity patterns between weekdays and weekends?
 
-### Creation of 
-```{r}
+```{r daily_activity_pattern_type_day }
 ## Definition of weekday/weekend
 dict_weekday<-data.frame("day"=weekdays(Sys.Date()+0:6),"type_day"=as.factor(c(rep("weekday",5),rep("weekend",2))))
 
@@ -130,10 +129,10 @@ head(data2)
 
 ## 2-facets plot
 library(lattice)
-stepinterv2<-aggregate(steps ~ interval+type_day, data=data2, mean)
-#stepinterv2<-aggregate(steps ~ time, data=data2, mean)
-#plot(x=stepinterv2$time,y=stepinterv2$steps,type="l", main="Daily activity pattern", xlab="Time", ylab="Average number of steps")
-xyplot(steps~interval | type_day,data=data2,type="l")
+stepinterv2<-aggregate(steps ~ time+type_day, data=data2, mean)
+
+xyplot(steps~time | type_day,data=stepinterv2,type="l",layout=c(1,2),xlab="Time",ylab="Number of steps",scales = list(x = list(format = "%H:%M")))
 
 ```
 
+**Conclusion** : There are some differences of daily patterns between weekdays and weekends. Weekends are more active (more steps).  

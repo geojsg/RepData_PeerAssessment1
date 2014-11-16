@@ -189,7 +189,6 @@ Imputing missing data has a negligible impact on mean (0.01%) but has a **signif
 
 ## Are there differences in activity patterns between weekdays and weekends?
 
-### Creation of 
 
 ```r
 ## Definition of weekday/weekend
@@ -217,11 +216,11 @@ head(data2)
 ```r
 ## 2-facets plot
 library(lattice)
-stepinterv2<-aggregate(steps ~ interval+type_day, data=data2, mean)
-#stepinterv2<-aggregate(steps ~ time, data=data2, mean)
-#plot(x=stepinterv2$time,y=stepinterv2$steps,type="l", main="Daily activity pattern", xlab="Time", ylab="Average number of steps")
-xyplot(steps~interval | type_day,data=data2,type="l")
+stepinterv2<-aggregate(steps ~ time+type_day, data=data2, mean)
+
+xyplot(steps~time | type_day,data=stepinterv2,type="l",layout=c(1,2),xlab="Time",ylab="Number of steps",scales = list(x = list(format = "%H:%M")))
 ```
 
-![](PA1_template_files/figure-html/unnamed-chunk-5-1.png) 
+![](PA1_template_files/figure-html/daily_activity_pattern_type_day-1.png) 
 
+**Conclusion** : There are some differences of daily patterns between weekdays and weekends. Weekends are more active (more steps).  
